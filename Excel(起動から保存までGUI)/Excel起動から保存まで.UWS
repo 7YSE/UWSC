@@ -1,0 +1,63 @@
+// 共通関数
+imgPath = "img/"
+
+// 処理内容を吹き出しで表示
+FUKIDASI("Excelの起動から保存までのテストです", 20, 10, 0, 10)
+
+// 入力フォームを表示
+CALL 入力フォーム.UWS
+
+// 入力フォームの戻り値を補足
+str = FORMPROC.FORM()
+
+EXCEL = CREATEOLEOBJ("Excel.Application")
+EXCEL.visible = True
+EXCEL.Workbooks.add()
+
+ACW(GETID("Book1 - Excel","XLMAIN"),0,0,1936,1040,0)
+ID = GETID(GET_ACTIVE_WIN);
+CTRLWIN(ID, MAX)
+
+// フォームに入力されたセル値が無効な場合の対処
+IFB str[0] = ""
+	str[0] = "A1"
+ENDIF
+
+// 入力フォームにて指定されたセルに対して値を入力
+EXCEL.Range(str[0]).Select
+EXCEL.Range(str[0]) = str[1]
+
+// 起動したExcelをアクティブ状態にする
+CTRLWIN(ID, ACTIVATE)
+
+sleep(1)
+
+// 名前を付けて保存まで選択
+KBD(VK_ALT,CLICK,94)
+KBD(VK_F,CLICK,94)
+KBD(VK_A,CLICK,94)
+KBD(VK_O,CLICK,94)
+
+sleep(1)
+
+// ファイル名を変更
+IFB CHKIMG(imgPath + "ファイル名.bmp")
+	// ファイル名の変更
+	BTN(LEFT, CLICK, G_IMG_X+100, G_IMG_Y, 500)
+	SENDSTR( ID, str[2])
+
+	CHKIMG(imgPath + "保存.bmp")
+	BTN(LEFT, CLICK, G_IMG_X, G_IMG_Y, 500)
+ENDIF
+
+sleep(1)
+
+// チェックがされていた場合のみ上書き保存
+IFB str[3] = 1 
+	// 既に同名のファイルが存在した場合
+	IFB CHKIMG(imgPath + "名前を付けて保存の確認.bmp")
+		// 上書きの実行
+		CHKIMG(imgPath + "はい.bmp")
+		BTN(LEFT, CLICK, G_IMG_X, G_IMG_Y, 500)
+	ENDIF
+ENDIF

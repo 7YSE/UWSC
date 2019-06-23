@@ -1,0 +1,22 @@
+CLASS FORMPROC
+
+FUNCTION FORM()
+
+dim str1[3] = "","","",""
+
+CREATEFORM("GETFORMDATA_SCRIPT.html", "GETFORMDATA_SCRIPT", False,, 300, 200, 600, 400)
+
+// セル
+str1[0]  = GETFORMDATA("text1")
+// 値
+str1[1]  = GETFORMDATA("text2")
+// ファイル名
+str1[2]  = GETFORMDATA("text3")
+// 上書きの有無
+str1[3]  = GETFORMDATA("checkbox1")
+
+result=SLICE(str1,0,3)
+
+FEND
+
+ENDCLASS
