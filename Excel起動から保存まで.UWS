@@ -1,0 +1,47 @@
+// 処理内容を吹き出しで表示
+FUKIDASI("Excelの起動から保存までのテストです", 20, 10, 0, 10)
+
+EXCEL = CREATEOLEOBJ("Excel.Application")
+EXCEL.visible = True
+EXCEL.Workbooks.add()
+
+ACW(GETID("Book1 - Excel","XLMAIN"),0,0,1936,1040,0)
+ID = GETID(GET_ACTIVE_WIN);
+CTRLWIN(ID, MAX)
+
+// 選択セル(C4)に対して"Hello UWSC"と入力する
+EXCEL.Range("C4").Select
+EXCEL.Range("C4") = "Hello UWSC"
+
+// 起動したExcelをアクティブ状態にする
+CTRLWIN(ID, ACTIVATE)
+
+sleep(1)
+
+// 名前を付けて保存まで選択
+KBD(VK_ALT,CLICK,94)
+KBD(VK_F,CLICK,94)
+KBD(VK_A,CLICK,94)
+KBD(VK_O,CLICK,94)
+
+sleep(1)
+
+// ファイル名を変更
+IFB CHKIMG("ファイル名.bmp")
+	// ファイル名の変更
+	BTN(LEFT, CLICK, G_IMG_X+100, G_IMG_Y, 500)
+	SENDSTR( ID,"保存テスト")
+
+	CHKIMG("保存.bmp")
+	BTN(LEFT, CLICK, G_IMG_X, G_IMG_Y, 500)
+ENDIF
+
+sleep(1)
+
+// 既に同名のファイルが存在した場合
+IFB CHKIMG("名前を付けて保存の確認.bmp")
+	// 上書きの実行
+	CHKIMG("はい.bmp")
+	BTN(LEFT, CLICK, G_IMG_X, G_IMG_Y, 500)
+
+ENDIF
