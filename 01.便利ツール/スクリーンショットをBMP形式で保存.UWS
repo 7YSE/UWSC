@@ -1,0 +1,65 @@
+// 共通設定-----------------------------------------------------
+imgPath = "img\"
+imgPath2= "img"
+// -------------------------------------------------------------
+// ESCキー入力で処理停止
+WHILE !GETKEYSTATE(VK_ESC)
+ // 説明書き
+ FUKIDASI("ESCキー：処理終了<#CR>F4キー：画像保存処理実行")
+ 
+ // SHIFTキーの入力を確認
+ IFB GETKEYSTATE(VK_F4)
+    // 処理開始
+    FUKIDASI("画像保存処理開始")
+    
+    // 保存する画像の名前を入力
+    BMP_NAME = INPUT("保存する画像の名称を入力してください")
+    
+    // ペイント起動
+    ID = EXEC("mspaint.exe")
+    
+    // ペイントを最大サイズに変更
+    CTRLWIN(ID,MAX)
+    
+    // クリップボードの画像をペースト
+    KBD(VK_CTRL,DOWN)
+    KBD(VK_V,CLICK)
+    KBD(VK_CTRL,UP)
+    
+    // BMP形式で保存開始
+    KBD(VK_ALT,CLICK)
+    KBD(VK_F,CLICK)
+    KBD(VK_V,CLICK)
+    KBD(VK_B,CLICK)
+    
+    // ファイル保存が見つかるまでループ
+    WHILE TRUE
+        IFB CHKIMG(imgPath + "ファイル保存_更新.bmp")
+            break;
+        ELSE
+            SLEEP(0.3)
+        ENDIF
+    WEND
+    
+    // パス移動 -> パス入力
+    CHKIMG(imgPath + "ファイル保存_更新.bmp")
+    BTN(LEFT,CLICK,G_IMG_X - 100 ,G_IMG_Y)
+    SENDSTR(GET_CUR_DIR + "\" + imgPath2,ID)
+    KBD(VK_ENTER,CLICK)
+    
+    // BMP画像のファイル名を入力
+    CHKIMG(imgPath + "ファイル保存_ファイル名.bmp")
+    BTN(LEFT,CLICK,G_IMG_X + 200 ,G_IMG_Y)
+    SENDSTR(BMP_NAME,ID)
+    
+    // 画像を保存
+    KBD(VK_ENTER,CLICK)
+    
+    // ペイント終了
+    CTRLWIN(ID,CLOSE)
+    
+    // 処理終了
+    FUKIDASI("画像保存処理終了")
+    SLEEP(2)
+ ENDIF
+WEND
